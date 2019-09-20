@@ -4,13 +4,15 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 import Steps from './components/Steps';
 import Board from './components/Board';
+import AI from './classes/AI';
 import {sortAscending, sortDescending, calculateWinner} from './helpers/functions';
 
 
 class Game extends React.Component {
-
+  ai = new AI();
 	constructor(props) {
-		super(props);
+    super(props);
+    
 		this.state = {
       history: [{
         squares: Array(9).fill(null),
@@ -26,8 +28,9 @@ class Game extends React.Component {
     const history = this.state.history.slice(0,this.state.stepNumber + 1);
     const current = history[history.length - 1];
     const squares = current.squares.slice();
-    // console.log(squares);
+    console.log(squares);
     const win = calculateWinner(squares);
+   console.log('search: ' + this.ai.alphabeta(squares, 1, 1,1, true));
 		if( win.winner || squares[i]) {
 			return;
 		}
@@ -119,7 +122,7 @@ class Game extends React.Component {
 }
 ReactDOM.render(
 	<Game/>,
-	document.getElementById('root')
+	document.getElementById('tictac-root')
 );
 
 
