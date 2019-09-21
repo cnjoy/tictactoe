@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import ReactDOM from 'react-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
@@ -9,7 +9,7 @@ import {sortAscending, sortDescending, calculateWinner} from './helpers/function
 
 
 class Game extends React.Component {
-  ai = new AI();
+  ai = new AJ();
 	constructor(props) {
     super(props);
     
@@ -23,14 +23,20 @@ class Game extends React.Component {
      
 		}
   }
-  
+  componentDidUpdate() { 
+    const history = this.state.history.slice(0,this.state.stepNumber + 1);
+    const current = history[history.length - 1];
+    const squares = current.squares.slice();
+    console.log('search: ' + this.ai.search(squares));
+  }
+
   handleClick(i,x,y) {
     const history = this.state.history.slice(0,this.state.stepNumber + 1);
     const current = history[history.length - 1];
     const squares = current.squares.slice();
     console.log(squares);
     const win = calculateWinner(squares);
-   console.log('search: ' + this.ai.alphabeta(squares, 1, 1,1, true));
+  //  console.log('search: ' + this.ai.search(squares));
 		if( win.winner || squares[i]) {
 			return;
 		}
