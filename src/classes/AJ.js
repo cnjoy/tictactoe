@@ -37,6 +37,7 @@ export default class AJ {
       for (let i = 0; i < board.length; i++) {
         let newBoard = this.move(i, this.minPlayer, board)
         if (newBoard) {
+          console.log('min board' + newBoard);
           let predictedMoveValue = this.maxMoveValue(newBoard)
           if (predictedMoveValue < bestMoveValue) bestMoveValue = predictedMoveValue
         }
@@ -55,6 +56,7 @@ export default class AJ {
       for (let i = 0; i < board.length; i++) {
         let newBoard = this.move(i, this.maxPlayer, board)
         if (newBoard) {
+          console.log('max board' + newBoard);
           let predictedMoveValue = this.minMoveValue(newBoard)
           if (predictedMoveValue > bestMoveValue) bestMoveValue = predictedMoveValue
         }

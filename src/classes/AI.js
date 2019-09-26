@@ -1,12 +1,18 @@
 class AI {
-
+//    squares=  [O,,X,,X,,,]
+//    newBoard =  [O,O,,X,X,,,]
 search(squares) {
     let bestMoveValue = -Infinity;
     let move = 0;
+    // const newSquares = [...squares];
+    
     for(let i=0; i<squares.length; i++ ) {
-        let newBoard = this.move(i,'O', squares);
+        let newBoard = this.move(i,'O', [...squares]);
+        
         if(newBoard) {
             let depth = newBoard.filter(x => x == null).length;
+            console.log('================search newboard ' + i + ' - '  + newBoard);
+            // let predictedMoveValue = 0;
             let predictedMoveValue = this.alphabeta(newBoard, depth, -Infinity, Infinity, true);
             if (predictedMoveValue > bestMoveValue) {
                 bestMoveValue = predictedMoveValue
@@ -20,7 +26,7 @@ search(squares) {
 }
 // alphabeta([X,0,0,0,0,0,0,0,0], 8, -Infinity, Inifinity, True)
 alphabeta(squares, depth, a,b, maximizingPlayer) {
-    console.log(depth + ': ' +squares)
+    // console.log(depth + ': ' +squares)
     if( depth == 0 ){
         return -Infinity;
     }
@@ -33,31 +39,37 @@ alphabeta(squares, depth, a,b, maximizingPlayer) {
     if(maximizingPlayer) {
         let value = -Infinity;
         for(let i=0; i<squares.length; i++ ) {
-            let newBoard = this.move(i,'O', squares);
+            let newBoard = this.move(i,'X', squares);
             if(newBoard) {
-                console.log('i: ' + i + '- ' + 'newBoard: ' + newBoard);
+                console.log('maximizing i: ' + i + '- ' + 'newBoard: ' + newBoard );
                 value = this.max(value, this.alphabeta(newBoard, depth - 1, a,b, false));
                 a = (a  >= value) ? a : value;
+                console.log(i + ' value:' + value);
                 if(a >= b) {
+                    return value;
                     break;
                 }
             }
         }
-        return value;
+        
     }else {
         let value = Infinity;
         for(let i=0; i<squares.length; i++ ) {
-            let newBoard = (i,'X', squares);
+            let newBoard = this.move(i,'O', squares);
             if(newBoard) {
+                console.log('minimizing i: ' + i + '- ' + 'newBoard: ' + newBoard );
                 value = this.min(value, this.alphabeta(newBoard, depth - 1, a,b, true));
                 a = (a  <= value) ? a : value;
+                
+                console.log(i + ' value:' + value);
                 if(a >= b) {
+                    return value;
                     break;
                 }
             }
             
         }
-        return value;
+       
     }
 }
 
