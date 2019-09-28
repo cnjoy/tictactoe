@@ -1,100 +1,69 @@
 class AI {
-//    squares=  [O,,X,,X,,,]
-//    newBoard =  [O,O,,X,X,,,]
+
 search(squares) {
     let bestMoveValue = -Infinity;
     let move = 0;
-    // const newSquares = [...squares];
-    
     for(let i=0; i<squares.length; i++ ) {
-        let newBoard = this.move(i,'O', [...squares]);
-        
+        let newBoard = this.updateBoard([...squares], i, 'O');
         if(newBoard) {
-            let depth = newBoard.filter(x => x == null).length;
-            console.log('================search newboard ' + i + ' - '  + newBoard);
-            // let predictedMoveValue = 0;
-            let predictedMoveValue = this.alphabeta(newBoard, depth, -Infinity, Infinity, true);
+            // console.log('================search newboard ' + i + ' - '  + newBoard);
+            let predictedMoveValue = this.minMoveValue(newBoard);
             if (predictedMoveValue > bestMoveValue) {
                 bestMoveValue = predictedMoveValue
-                move = i
-                
-              }
+                move = i;
+            }
         }
     }
-    console.log('Move: ' + move);
     return move;
 }
-// alphabeta([X,0,0,0,0,0,0,0,0], 8, -Infinity, Inifinity, True)
-alphabeta(squares, depth, a,b, maximizingPlayer) {
-    // console.log(depth + ': ' +squares)
-    if( depth == 0 ){
-        return -Infinity;
-    }
-    let move = 0;
 
-    if (this.calculateWinner(squares).winner === 'X'){ return Infinity};
-    if (this.calculateWinner(squares).winner === 'O'){ return -Infinity;}
-    if(!squares.includes(null)) return 0;
-    
-    if(maximizingPlayer) {
-        let value = -Infinity;
-        for(let i=0; i<squares.length; i++ ) {
-            let newBoard = this.move(i,'X', squares);
-            if(newBoard) {
-                console.log('maximizing i: ' + i + '- ' + 'newBoard: ' + newBoard );
-                value = this.max(value, this.alphabeta(newBoard, depth - 1, a,b, false));
-                a = (a  >= value) ? a : value;
-                console.log(i + ' value:' + value);
-                if(a >= b) {
-                    return value;
-                    break;
-                }
-            }
-        }
-        
-    }else {
-        let value = Infinity;
-        for(let i=0; i<squares.length; i++ ) {
-            let newBoard = this.move(i,'O', squares);
-            if(newBoard) {
-                console.log('minimizing i: ' + i + '- ' + 'newBoard: ' + newBoard );
-                value = this.min(value, this.alphabeta(newBoard, depth - 1, a,b, true));
-                a = (a  <= value) ? a : value;
-                
-                console.log(i + ' value:' + value);
-                if(a >= b) {
-                    return value;
-                    break;
-                }
-            }
-            
-        }
-       
-    }
-}
+minMoveValue (squares) {
+    if (this.calculateWinner(squares).winner === 'O') return Infinity;
+    if (this.calculateWinner(squares).winner === 'X') return -Infinity;
+    if (!squares.includes(null)) return 0;
 
-max(a, b){
-    return (a  >= b) ? a : b;
-}
-min(a, b){
-    return (a  <= b) ? a : b;
-}
-move (move, player, board) {
-    let newBoard = board;
+    let bestMoveValue = Infinity
 
-    if (newBoard[move] === null) {
-      newBoard[move] = player
-      return newBoard
+    for (let i = 0; i < squares.length; i++) {
+      let newBoard = this.updateBoard([...squares], i, 'X')
+      if (newBoard) {
+        // console.log('min board' + newBoard);
+        let predictedMoveValue = this.maxMoveValue(newBoard)
+        if (predictedMoveValue < bestMoveValue) bestMoveValue = predictedMoveValue;
+      }
     }
-    return
+
+    return bestMoveValue
   }
 
-// nextBoard(board, player){
-//     for(i = 0, i < board.length; i++ ) {
-//         if(!board[i])
-//     }
-// }
-    
+  maxMoveValue (squares) {
+    if (this.calculateWinner(squares).winner === 'O') return Infinity;
+    if (this.calculateWinner(squares).winner === 'X') return -Infinity;
+    if (!squares.includes(null)) return 0;
+
+    let bestMoveValue = -Infinity
+
+    for (let i = 0; i < squares.length; i++) {
+      let newBoard = this.updateBoard([...squares], i, 'O')
+      if (newBoard) {
+        let predictedMoveValue = this.minMoveValue(newBoard)
+        if (predictedMoveValue > bestMoveValue) bestMoveValue = predictedMoveValue
+      }
+    }
+
+    return bestMoveValue
+  }
+
+updateBoard(board, index, player) {
+
+    if (board[index] === null) {
+        board[index] = player
+      return board
+    }
+    return
+}
+
+
 
 calculateWinner(squares) {
     let result = {winner : null, lines: []};

@@ -23,51 +23,28 @@ class Game extends React.Component {
       stepNumber: 0,
       xIsNext: true,
      
-    }
-    
-    // this.games.on('moved', (arg) =>{
-    //   const history = this.state.history.slice(0,this.state.stepNumber + 1);
-    //   const current = history[history.length - 1];
-    //   if(!this.state.xIsNext) {
-    //   this.setState({
-    //     history: history.concat([{
-    //       squares: arg.board,
-    //       position: {x:0, y:1}
-    //     }]),
-    //     stepNumber: history.length,
-    //     xIsNext: !this.state.xIsNext,
-    //     position: [{x:0, y:1}],
-    //   });
-    //   this.games.update();
-    // }
-    // })
-    
+    }  
 
   }
-  componentDidUpdate() { 
-    const history = this.state.history.slice(0,this.state.stepNumber + 1);
-    const current = history[history.length - 1];
-    const squares = current.squares.slice();
-    // this.ai.player
-    // if(!this.state.xIsNext)
-    // console.log('search: ' + this.ai.search(squares));
-    
-    
-  }
-
+  
   handleClick(i,x,y) {
     const history = this.state.history.slice(0,this.state.stepNumber + 1);
     const current = history[history.length - 1];
     const squares = current.squares.slice();
-    console.log(squares);
+    
     const win = calculateWinner(squares);
+    console.log(history);
+    console.log(current);
+    console.log(current.squares);
+    console.log(squares);
+    console.log('squares:' + squares);
   //  console.log('search: ' + this.ai.search(squares));
 		if( win.winner || squares[i]) {
 			return;
 		}
    
     squares[i] = this.state.xIsNext ? 'X' : 'O';
-    console.log('1xisnext ' + this.state.xIsNext);
+    console.log('X:' + this.state.xIsNext);
       this.setState({
         history: history.concat([{
           squares: squares,
@@ -77,10 +54,17 @@ class Game extends React.Component {
         xIsNext: !this.state.xIsNext,
         position: [{x:x, y:y}],
       });
-console.log('2xisnext ' + this.state.xIsNext);
+      let aiMove = this.ai.search(squares);
+      if(this.state.xIsNext) {
+      console.log( squares);
+      console.log('X:' + this.state.xIsNext);
+      
+      console.log('search: ' + aiMove);
+      }
+
+      squares[aiMove] = 'O';
       if(this.state.xIsNext) 
       {
-        console.log('3xisnext ' + this.state.xIsNext);
         this.games.on('moved', (arg) =>{
           const history = this.state.history.slice(0,this.state.stepNumber + 1);
           const current = history[history.length - 1];
@@ -98,7 +82,6 @@ console.log('2xisnext ' + this.state.xIsNext);
         
       
       })
-      console.log(squares);
       this.games.update(squares);
     }
   }
